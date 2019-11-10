@@ -1,14 +1,28 @@
 ﻿using NUnit.Framework;
 using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace wf_metr_lab3
 {
     static class CFunctionsKeeper
-    {
+    {       
+        public static CPair[] HaffmanCode(CPair[] aSequence)
+        {    
+            Assert.IsTrue(aSequence.Length.CompareTo(2).Equals(1));
+            List<CPair> aTreeCodes = new List<CPair>();
+            foreach(CPair rPair in aSequence)
+            {
+                aTreeCodes.Add(rPair);
+            }
+            while (aTreeCodes.Count != 1)
+            {
+                CPair rFirstMin = FindAndDeleteMinProbability(aTreeCodes),
+                    rSecondMin = FindAndDeleteMinProbability(aTreeCodes);              
+                CPair rNewRoot = new CPair(rFirstMin, rSecondMin);                
+                aTreeCodes.Add(rNewRoot);
+            }
+            return aTreeCodes[0].Leafs;
+        }
         public static int BucketSearch(double[] aSequence, double fSearched, int iCountOfBuckets)
         {
             int iSearchedIndex = -1;
@@ -43,6 +57,21 @@ namespace wf_metr_lab3
             }
             return aSortedSequence;
         }
+        private static CPair FindAndDeleteMinProbability(List<CPair> aCodes)
+        {
+            CPair fMin = new CPair("TempSymp",double.MaxValue);
+            int iNumberOfMin = -1;
+            for (int i = 0; i < aCodes.Count; i++)
+            {
+                if (aCodes[i].Probability < fMin.Probability)
+                {
+                    fMin.Copy(aCodes[i]);
+                    iNumberOfMin = i;
+                }
+            }
+            aCodes.RemoveAt(iNumberOfMin);
+            return fMin;
+        }      
         private static int FindIndexOfMin (int iStart, double[] aSequence)
         {
             int iMinIndex = iStart;
@@ -102,6 +131,5 @@ namespace wf_metr_lab3
             }
             return iNumberOfFinded;
         }
-
     }
 }
